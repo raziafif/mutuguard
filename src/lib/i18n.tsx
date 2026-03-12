@@ -1,0 +1,387 @@
+"use client";
+
+import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+
+export type Locale = "fr" | "en";
+
+interface I18nContextType {
+  locale: Locale;
+  t: (key: string) => string;
+  toggle: () => void;
+}
+
+const I18nContext = createContext<I18nContextType | null>(null);
+
+export function useI18n() {
+  const ctx = useContext(I18nContext);
+  if (!ctx) throw new Error("useI18n must be used within I18nProvider");
+  return ctx;
+}
+
+export function I18nProvider({ children }: { children: ReactNode }) {
+  const [locale, setLocale] = useState<Locale>("fr");
+
+  const toggle = useCallback(() => {
+    setLocale((prev) => (prev === "fr" ? "en" : "fr"));
+  }, []);
+
+  const t = useCallback(
+    (key: string): string => {
+      const dict = locale === "fr" ? fr : en;
+      return (dict as Record<string, string>)[key] ?? key;
+    },
+    [locale]
+  );
+
+  return (
+    <I18nContext.Provider value={{ locale, t, toggle }}>
+      {children}
+    </I18nContext.Provider>
+  );
+}
+
+const fr: Record<string, string> = {
+  // Nav
+  "nav.problem": "Problème",
+  "nav.solution": "Solution",
+  "nav.howItWorks": "Comment ça marche",
+  "nav.features": "Fonctionnalités",
+  "nav.mission": "Mission",
+  "nav.bookDemo": "Demander une démo",
+
+  // Hero
+  "hero.badge": "Détection de fraude par IA pour l'assurance santé",
+  "hero.title1": "Détectez la fraude à l'assurance santé",
+  "hero.title2": "avant qu'elle ne coûte des millions.",
+  "hero.subtitle": "MutuGuard aide les mutuelles à détecter les remboursements suspects grâce à l'IA et à la vérification en temps réel des adhérents.",
+  "hero.cta1": "Demander une démo",
+  "hero.cta2": "Voir comment ça marche",
+  "hero.pill1": "Prévention de la fraude en temps réel",
+  "hero.pill2": "Vérification des adhérents par SMS",
+  "hero.pill3": "Analyse des risques par IA",
+
+  // Problem
+  "problem.label": "Le problème",
+  "problem.title1": "La fraude à l'assurance santé est une",
+  "problem.title2": "crise croissante",
+  "problem.subtitle": "Le traitement traditionnel des sinistres ne peut pas suivre le rythme des schémas de fraude de plus en plus sophistiqués ciblant les assureurs santé et les mutuelles.",
+  "problem.item1.title": "Faux remboursements",
+  "problem.item1.desc": "Des factures fabriquées et des actes médicaux fictifs génèrent des milliards de remboursements frauduleux chaque année.",
+  "problem.item2.title": "Abus d'identité et de droits",
+  "problem.item2.desc": "Partage de cartes entre adhérents, bénéficiaires fantômes et exploitation des complémentaires santé.",
+  "problem.item3.title": "Prestataires frauduleux",
+  "problem.item3.desc": "Collusion entre professionnels de santé et intermédiaires pour gonfler ou fabriquer des prestations.",
+  "problem.item4.title": "Des millions perdus chaque année",
+  "problem.item4.desc": "Les mutuelles européennes perdent entre 1 et 3 milliards d'euros par an à cause de la fraude et des abus.",
+
+  // Solution
+  "solution.label": "La solution",
+  "solution.title": "Une plateforme complète de détection de fraude",
+  "solution.subtitle": "MutuGuard combine l'IA, la vérification en temps réel et des analyses puissantes pour stopper la fraude à chaque étape du processus de remboursement.",
+  "solution.item1.title": "Détection de fraude par IA",
+  "solution.item1.desc": "Des modèles de machine learning entraînés sur des millions de sinistres pour identifier des schémas de fraude invisibles aux réviseurs humains.",
+  "solution.item2.title": "Détection d'anomalies",
+  "solution.item2.desc": "L'analyse statistique des demandes de remboursement signale les valeurs aberrantes, les fréquences inhabituelles et les anomalies de coûts en temps réel.",
+  "solution.item3.title": "Confirmation par SMS",
+  "solution.item3.desc": "Les sinistres suspects déclenchent des messages de vérification instantanés aux adhérents. Ils confirment ou nient l'acte médical.",
+  "solution.item4.title": "Scoring de risque",
+  "solution.item4.desc": "Chaque sinistre, adhérent et prestataire reçoit un score de risque en temps réel permettant une investigation priorisée.",
+  "solution.item5.title": "Tableau de bord d'investigation",
+  "solution.item5.desc": "Un tableau de bord puissant pour que les équipes fraude gèrent les cas, suivent les preuves et collaborent sur les investigations.",
+  "solution.item6.title": "Alertes en temps réel",
+  "solution.item6.desc": "Des notifications instantanées pour les sinistres à haut risque permettent à votre équipe fraude d'agir immédiatement.",
+  "solution.item7.title": "Profilage comportemental des assurés",
+  "solution.item7.desc": "Analyse du comportement des adhérents — fréquence des consultations, habitudes de remboursement, changements de prestataires — pour détecter les profils à risque avant même qu'un sinistre suspect ne soit déposé.",
+
+  // How it works
+  "how.label": "Comment ça marche",
+  "how.title": "Quatre étapes pour stopper la fraude",
+  "how.subtitle": "De la soumission du sinistre à la résolution de la fraude — entièrement automatisé, en temps réel et intégré à vos systèmes existants.",
+  "how.step": "ÉTAPE",
+  "how.step1.title": "Les sinistres sont analysés par l'IA",
+  "how.step1.desc": "Chaque sinistre entrant est traité par le moteur IA de MutuGuard, qui vérifie les schémas de fraude connus, l'historique du prestataire et les anomalies statistiques.",
+  "how.step2.title": "Vérification envoyée à l'adhérent",
+  "how.step2.desc": "Les sinistres suspects déclenchent un SMS ou une notification push à l'adhérent assuré, lui demandant de confirmer si l'acte médical a eu lieu.",
+  "how.step3.title": "L'adhérent confirme ou nie",
+  "how.step3.desc": "L'adhérent répond par un simple « Oui » ou « Non ». Un refus ou une absence de réponse escalade automatiquement le sinistre pour examen.",
+  "how.step4.title": "L'équipe fraude agit sur les alertes",
+  "how.step4.desc": "Votre équipe d'investigation reçoit des alertes priorisées, des dossiers et des analyses pour agir rapidement et prévenir les remboursements frauduleux.",
+
+  // Features
+  "features.label": "Fonctionnalités",
+  "features.title": "Tout ce qu'il faut pour lutter contre la fraude",
+  "features.subtitle": "Des outils conçus spécifiquement pour la prévention de la fraude à l'assurance santé, de la détection à la résolution.",
+  "features.item1.title": "IA de détection de fraude",
+  "features.item1.desc": "Détectez automatiquement les sinistres suspects grâce à des modèles avancés de machine learning entraînés sur des données de fraude médicale.",
+  "features.item2.title": "Confirmation des adhérents",
+  "features.item2.desc": "Vérifiez les actes médicaux par SMS ou notification mobile. Les adhérents confirment ou nient — simple, instantané, efficace.",
+  "features.item3.title": "Tableau de bord analytique",
+  "features.item3.desc": "Suivez les schémas de fraude, l'avancement des dossiers et la performance de l'équipe avec des analyses visuelles puissantes.",
+  "features.item4.title": "Prêt pour l'intégration",
+  "features.item4.desc": "Connectez-vous aux systèmes de gestion des sinistres, ERP et sources de données tierces via notre API REST et nos SDK.",
+  "features.item5.title": "Profilage des assurés",
+  "features.item5.desc": "Comprenez le comportement de chaque adhérent grâce au profilage intelligent — détectez les anomalies comportementales et anticipez les risques de fraude.",
+
+  // Mission
+  "mission.label": "Notre mission",
+  "mission.title": "Pourquoi nous avons créé MutuGuard",
+  "mission.subtitle": "La fraude à l'assurance santé coûte des milliards aux assureurs européens chaque année, pourtant la plupart des méthodes de détection restent manuelles et réactives. MutuGuard existe pour changer cela — en plaçant l'IA et la participation des adhérents au cœur de la prévention de la fraude.",
+  "mission.item1.title": "Révéler la fraude cachée",
+  "mission.item1.desc": "Découvrez les remboursements frauduleux, les actes médicaux fictifs et les abus de facturation qui échappent aux contrôles manuels traditionnels.",
+  "mission.item2.title": "Protéger les ressources financières",
+  "mission.item2.desc": "Aider les mutuelles et assureurs à récupérer les millions perdus à cause de la fraude et à rediriger ces fonds vers les soins véritables des adhérents.",
+  "mission.item3.title": "Responsabiliser les adhérents",
+  "mission.item3.desc": "Donner aux adhérents assurés une voix dans le processus de vérification grâce aux confirmations en temps réel par SMS et mobile.",
+  "mission.item4.title": "Renforcer la conformité",
+  "mission.item4.desc": "Fournir des pistes d'audit, des rapports de risques et une documentation prête pour les régulateurs afin de répondre aux normes de conformité européennes.",
+  "mission.item5.title": "Moderniser les opérations anti-fraude",
+  "mission.item5.desc": "Remplacer les audits manuels lents par une plateforme IA qui détecte les anomalies et priorise les investigations automatiquement.",
+  "mission.item6.title": "S'étendre sur tous les marchés",
+  "mission.item6.desc": "Conçu pour servir les mutuelles, les complémentaires santé et les réseaux de soins en France et sur le marché européen.",
+  "mission.vision.title": "Notre vision pour le secteur",
+  "mission.vision.desc": "Nous croyons que chaque mutuelle et assureur santé mérite d'accéder à une détection intelligente de la fraude — pas seulement les plus grands acteurs. MutuGuard construit la plateforme standard qui rend la prévention de la fraude par IA en temps réel accessible aux organisations de toutes tailles.",
+  "mission.vision.cta": "Rejoignez-nous en tant que partenaire fondateur",
+
+  // Trust / Who we serve
+  "trust.label": "À qui nous nous adressons",
+  "trust.title": "Conçu pour les assureurs santé et les mutuelles modernes",
+  "trust.subtitle": "MutuGuard est conçu pour chaque acteur de la chaîne de prévention de la fraude à l'assurance santé — des dirigeants aux équipes d'investigation.",
+  "trust.item1.title": "Mutuelles",
+  "trust.item1.desc": "Les complémentaires santé cherchant à réduire les remboursements frauduleux et à protéger les cotisations des adhérents.",
+  "trust.item2.title": "Compagnies d'assurance",
+  "trust.item2.desc": "Les assureurs santé souhaitant moderniser leurs opérations anti-fraude avec une détection par IA et des analyses en temps réel.",
+  "trust.item3.title": "Réseaux de soins",
+  "trust.item3.desc": "Les réseaux de prestataires et administrateurs tiers qui doivent vérifier les sinistres et prévenir les abus de facturation à grande échelle.",
+  "trust.item4.title": "Équipes conformité et fraude",
+  "trust.item4.desc": "Les professionnels de l'investigation et de la conformité qui ont besoin de meilleurs outils pour identifier, documenter et agir sur les cas de fraude.",
+
+  // Demo form
+  "demo.label": "Commencer",
+  "demo.title": "Réservez votre démo personnalisée",
+  "demo.subtitle": "Découvrez comment MutuGuard peut protéger votre organisation contre la fraude à l'assurance santé. Notre équipe vous présentera la plateforme et répondra à toutes vos questions.",
+  "demo.benefit1": "Présentation de la plateforme en direct",
+  "demo.benefit2": "Évaluation personnalisée des risques de fraude",
+  "demo.benefit3": "Session de planification d'intégration",
+  "demo.benefit4": "Projection du ROI pour votre organisation",
+  "demo.name": "Nom complet *",
+  "demo.namePlaceholder": "Jean Dupont",
+  "demo.company": "Entreprise *",
+  "demo.companyPlaceholder": "Mutuelle Santé",
+  "demo.email": "Email professionnel *",
+  "demo.emailPlaceholder": "jean@entreprise.com",
+  "demo.phone": "Téléphone",
+  "demo.phonePlaceholder": "+33 6 12 34 56 78",
+  "demo.companySize": "Taille de l'entreprise",
+  "demo.companySizePlaceholder": "Sélectionner la taille",
+  "demo.size1": "1–50 employés",
+  "demo.size2": "51–200 employés",
+  "demo.size3": "201–1 000 employés",
+  "demo.size4": "1 000+ employés",
+  "demo.message": "Message",
+  "demo.messagePlaceholder": "Parlez-nous de vos besoins en détection de fraude...",
+  "demo.submit": "Demander une démo",
+  "demo.submitting": "Envoi en cours...",
+  "demo.privacy": "En soumettant ce formulaire, vous acceptez notre politique de confidentialité. Nous ne partagerons jamais vos informations.",
+  "demo.success.title": "Demande de démo reçue !",
+  "demo.success.desc": "Merci pour votre intérêt pour MutuGuard. Notre équipe vous contactera dans les 24 heures pour planifier votre démo personnalisée.",
+  "demo.success.another": "Soumettre une autre demande",
+  "demo.error.network": "Erreur réseau. Veuillez réessayer.",
+  "demo.error.generic": "Une erreur est survenue.",
+
+  // Footer
+  "footer.desc": "Détection de fraude par IA pour les compagnies d'assurance santé et les mutuelles.",
+  "footer.product": "Produit",
+  "footer.features": "Fonctionnalités",
+  "footer.howItWorks": "Comment ça marche",
+  "footer.pricing": "Tarifs",
+  "footer.documentation": "Documentation",
+  "footer.security": "Sécurité",
+  "footer.soc2": "Conformité SOC 2",
+  "footer.gdpr": "RGPD",
+  "footer.encryption": "Chiffrement des données",
+  "footer.auditLogs": "Journaux d'audit",
+  "footer.company": "Entreprise",
+  "footer.about": "À propos",
+  "footer.blog": "Blog",
+  "footer.careers": "Carrières",
+  "footer.contact": "Contact",
+  "footer.legal": "Légal",
+  "footer.privacy": "Politique de confidentialité",
+  "footer.terms": "Conditions d'utilisation",
+  "footer.cookies": "Politique des cookies",
+  "footer.dpa": "DPA",
+  "footer.rights": "Tous droits réservés.",
+};
+
+const en: Record<string, string> = {
+  // Nav
+  "nav.problem": "Problem",
+  "nav.solution": "Solution",
+  "nav.howItWorks": "How It Works",
+  "nav.features": "Features",
+  "nav.mission": "Mission",
+  "nav.bookDemo": "Book a Demo",
+
+  // Hero
+  "hero.badge": "AI-Powered Fraud Detection for Health Insurance",
+  "hero.title1": "Detect health insurance fraud",
+  "hero.title2": "before it costs millions.",
+  "hero.subtitle": "MutuGuard helps mutuelles detect suspicious reimbursements using AI and real-time member verification.",
+  "hero.cta1": "Book a Demo",
+  "hero.cta2": "See How It Works",
+  "hero.pill1": "Real-time fraud prevention",
+  "hero.pill2": "Member verification via SMS",
+  "hero.pill3": "AI-driven risk analytics",
+
+  // Problem
+  "problem.label": "The Problem",
+  "problem.title1": "Healthcare fraud is a",
+  "problem.title2": "growing crisis",
+  "problem.subtitle": "Traditional claim processing can't keep up with increasingly sophisticated fraud schemes targeting health insurers and mutuelles.",
+  "problem.item1.title": "Fake Reimbursements",
+  "problem.item1.desc": "Fabricated invoices and phantom medical acts generate billions in fraudulent payouts each year.",
+  "problem.item2.title": "Identity & Benefit Abuse",
+  "problem.item2.desc": "Members sharing cards, ghost beneficiaries, and exploitation of complementary health coverage.",
+  "problem.item3.title": "Fraudulent Providers",
+  "problem.item3.desc": "Collusion between healthcare providers and intermediaries inflating or fabricating services.",
+  "problem.item4.title": "Millions Lost Each Year",
+  "problem.item4.desc": "European mutuelles lose an estimated €1–3 billion annually to healthcare fraud and abuse.",
+
+  // Solution
+  "solution.label": "The Solution",
+  "solution.title": "A complete fraud detection platform",
+  "solution.subtitle": "MutuGuard combines AI, real-time verification, and powerful analytics to stop fraud at every stage of the claims process.",
+  "solution.item1.title": "AI-Powered Fraud Detection",
+  "solution.item1.desc": "Machine learning models trained on millions of claims to identify fraud patterns invisible to human reviewers.",
+  "solution.item2.title": "Anomaly Detection",
+  "solution.item2.desc": "Statistical analysis on reimbursement claims flags outliers, unusual frequencies, and cost anomalies in real time.",
+  "solution.item3.title": "Member Confirmation via SMS",
+  "solution.item3.desc": "Suspicious claims trigger instant verification messages to members. They confirm or deny the medical act.",
+  "solution.item4.title": "Risk Scoring",
+  "solution.item4.desc": "Every claim, member, and provider receives a real-time risk score enabling prioritized investigation.",
+  "solution.item5.title": "Investigation Dashboard",
+  "solution.item5.desc": "A powerful dashboard for fraud teams to manage cases, track evidence, and collaborate on investigations.",
+  "solution.item6.title": "Real-Time Alerts",
+  "solution.item6.desc": "Instant notifications for high-risk claims ensure your fraud team can act immediately, preventing payouts.",
+  "solution.item7.title": "User Behavior Profiling",
+  "solution.item7.desc": "Analyze member behavior — consultation frequency, reimbursement patterns, provider changes — to identify at-risk profiles before a suspicious claim is even filed.",
+
+  // How it works
+  "how.label": "How It Works",
+  "how.title": "Four steps to stop fraud",
+  "how.subtitle": "From claim submission to fraud resolution — fully automated, real-time, and integrated with your existing systems.",
+  "how.step": "STEP",
+  "how.step1.title": "Claims Analyzed by AI",
+  "how.step1.desc": "Every incoming claim is processed by MutuGuard's AI engine, which checks against known fraud patterns, provider history, and statistical anomalies.",
+  "how.step2.title": "Verification Sent to Member",
+  "how.step2.desc": "Suspicious claims trigger an SMS or push notification to the insured member, asking them to confirm whether the medical act took place.",
+  "how.step3.title": "Member Confirms or Denies",
+  "how.step3.desc": "The member responds with a simple \"Yes\" or \"No.\" A denial or non-response automatically escalates the claim for review.",
+  "how.step4.title": "Fraud Team Acts on Alerts",
+  "how.step4.desc": "Your investigation team receives prioritized alerts, case files, and analytics to take swift action and prevent fraudulent payouts.",
+
+  // Features
+  "features.label": "Features",
+  "features.title": "Everything you need to fight fraud",
+  "features.subtitle": "Purpose-built tools for health insurance fraud prevention, from detection to resolution.",
+  "features.item1.title": "Fraud Detection AI",
+  "features.item1.desc": "Detect suspicious claims automatically using advanced machine learning models trained on healthcare fraud data.",
+  "features.item2.title": "Member Confirmation",
+  "features.item2.desc": "Verify medical acts via SMS or mobile notification. Members confirm or deny — simple, instant, effective.",
+  "features.item3.title": "Fraud Analytics Dashboard",
+  "features.item3.desc": "Track fraud patterns, case progress, and team performance with powerful visual analytics.",
+  "features.item4.title": "Integration Ready",
+  "features.item4.desc": "Connect with insurance claim systems, ERPs, and third-party data sources through our REST API and SDKs.",
+  "features.item5.title": "User Profiling",
+  "features.item5.desc": "Understand each member's behavior through intelligent profiling — detect behavioral anomalies and anticipate fraud risks before they materialize.",
+
+  // Mission
+  "mission.label": "Our Mission",
+  "mission.title": "Why we built MutuGuard",
+  "mission.subtitle": "Healthcare fraud costs European insurers billions every year, yet most detection methods remain manual and reactive. MutuGuard exists to change that — putting AI and member participation at the center of fraud prevention.",
+  "mission.item1.title": "Expose Hidden Fraud",
+  "mission.item1.desc": "Uncover fraudulent reimbursements, phantom medical acts, and billing abuse that slip through traditional manual reviews.",
+  "mission.item2.title": "Protect Financial Resources",
+  "mission.item2.desc": "Help mutuelles and insurers recover millions lost to fraud each year and redirect those funds to genuine member care.",
+  "mission.item3.title": "Empower Members",
+  "mission.item3.desc": "Give insured members a voice in the verification process through real-time SMS and mobile confirmations of medical acts.",
+  "mission.item4.title": "Strengthen Compliance",
+  "mission.item4.desc": "Provide audit trails, risk reports, and regulatory-ready documentation to meet evolving compliance standards across Europe.",
+  "mission.item5.title": "Modernize Fraud Operations",
+  "mission.item5.desc": "Replace slow, manual claim audits with an AI-first platform that detects anomalies and prioritizes investigations automatically.",
+  "mission.item6.title": "Scale Across Markets",
+  "mission.item6.desc": "Built to serve mutuelles, complementary health insurers, and healthcare networks across France and the wider European market.",
+  "mission.vision.title": "Our vision for the industry",
+  "mission.vision.desc": "We believe every mutuelle and health insurer deserves access to intelligent fraud detection — not just the largest players. MutuGuard is building the standard platform that makes real-time, AI-driven fraud prevention accessible to organizations of all sizes.",
+  "mission.vision.cta": "Join us as an early partner",
+
+  // Trust / Who we serve
+  "trust.label": "Who We Serve",
+  "trust.title": "Built for modern health insurers and mutual organizations",
+  "trust.subtitle": "MutuGuard is designed for every stakeholder in the health insurance fraud prevention chain — from executives to investigation teams.",
+  "trust.item1.title": "Mutuelles",
+  "trust.item1.desc": "Complementary health insurers looking to reduce fraudulent reimbursements and protect member contributions.",
+  "trust.item2.title": "Insurance Companies",
+  "trust.item2.desc": "Health insurers seeking to modernize their fraud operations with AI-driven detection and real-time analytics.",
+  "trust.item3.title": "Healthcare Networks",
+  "trust.item3.desc": "Provider networks and third-party administrators that need to verify claims and prevent billing abuse at scale.",
+  "trust.item4.title": "Compliance & Fraud Teams",
+  "trust.item4.desc": "Investigation and compliance professionals who need better tools to identify, document, and act on fraud cases.",
+
+  // Demo form
+  "demo.label": "Get Started",
+  "demo.title": "Book your personalized demo",
+  "demo.subtitle": "See how MutuGuard can protect your organization from healthcare fraud. Our team will walk you through the platform and answer all your questions.",
+  "demo.benefit1": "Live platform walkthrough",
+  "demo.benefit2": "Custom fraud risk assessment",
+  "demo.benefit3": "Integration planning session",
+  "demo.benefit4": "ROI projection for your organization",
+  "demo.name": "Full Name *",
+  "demo.namePlaceholder": "Jean Dupont",
+  "demo.company": "Company *",
+  "demo.companyPlaceholder": "Mutuelle Santé",
+  "demo.email": "Work Email *",
+  "demo.emailPlaceholder": "jean@company.com",
+  "demo.phone": "Phone",
+  "demo.phonePlaceholder": "+33 6 12 34 56 78",
+  "demo.companySize": "Company Size",
+  "demo.companySizePlaceholder": "Select company size",
+  "demo.size1": "1–50 employees",
+  "demo.size2": "51–200 employees",
+  "demo.size3": "201–1,000 employees",
+  "demo.size4": "1,000+ employees",
+  "demo.message": "Message",
+  "demo.messagePlaceholder": "Tell us about your fraud detection needs...",
+  "demo.submit": "Request Demo",
+  "demo.submitting": "Submitting...",
+  "demo.privacy": "By submitting, you agree to our Privacy Policy. We'll never share your information.",
+  "demo.success.title": "Demo Request Received!",
+  "demo.success.desc": "Thank you for your interest in MutuGuard. Our team will reach out within 24 hours to schedule your personalized demo.",
+  "demo.success.another": "Submit another request",
+  "demo.error.network": "Network error. Please try again.",
+  "demo.error.generic": "Something went wrong.",
+
+  // Footer
+  "footer.desc": "AI-powered fraud detection for health insurance companies and mutuelles.",
+  "footer.product": "Product",
+  "footer.features": "Features",
+  "footer.howItWorks": "How It Works",
+  "footer.pricing": "Pricing",
+  "footer.documentation": "Documentation",
+  "footer.security": "Security",
+  "footer.soc2": "SOC 2 Compliance",
+  "footer.gdpr": "GDPR",
+  "footer.encryption": "Data Encryption",
+  "footer.auditLogs": "Audit Logs",
+  "footer.company": "Company",
+  "footer.about": "About",
+  "footer.blog": "Blog",
+  "footer.careers": "Careers",
+  "footer.contact": "Contact",
+  "footer.legal": "Legal",
+  "footer.privacy": "Privacy Policy",
+  "footer.terms": "Terms of Service",
+  "footer.cookies": "Cookie Policy",
+  "footer.dpa": "DPA",
+  "footer.rights": "All rights reserved.",
+};

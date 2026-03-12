@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MutuGuard — Fraud Detection for Health Insurance
+
+A modern, bilingual (FR/EN) SaaS landing page for **MutuGuard**, an AI-powered fraud detection platform for health insurance companies and mutuelles.
+
+**Live site:** [https://raziafif.github.io/mutuguard](https://raziafif.github.io/mutuguard)
+
+## Tech Stack
+
+- **Next.js 16** (App Router)
+- **React 19**
+- **TailwindCSS 4**
+- **TypeScript**
+- **SQLite** (via better-sqlite3) for demo request storage (local dev)
+- **GitHub Pages** for static deployment
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ installed
+- npm
+
+### Installation
+
+```bash
+cd mutuguard
+npm install
+```
+
+### Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build for Production (server mode)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+### Build for Static Export (GitHub Pages)
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+STATIC_EXPORT=true npx next build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Output goes to the `out/` directory. The API routes and admin page are excluded from the static build.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+This project uses **GitHub Actions** to automatically deploy to **GitHub Pages** on every push to `main`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The workflow (`.github/workflows/deploy.yml`):
+1. Installs dependencies
+2. Removes server-only code (API routes, admin page, SQLite)
+3. Builds with `STATIC_EXPORT=true`
+4. Deploys the `out/` directory to GitHub Pages
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+
+```
+mutuguard/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml          # GitHub Pages deployment workflow
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx          # Root layout with fonts & metadata
+│   │   ├── page.tsx            # Main landing page
+│   │   ├── globals.css         # Global styles & animations
+│   │   ├── admin/
+│   │   │   └── page.tsx        # Admin dashboard (local dev only)
+│   │   └── api/
+│   │       └── demo/
+│   │           └── route.ts    # REST API for demo requests (local dev only)
+│   ├── components/
+│   │   ├── Navbar.tsx          # Fixed navigation bar with language switcher
+│   │   ├── Hero.tsx            # Hero section with CTA
+│   │   ├── Problem.tsx         # Fraud problem explanation
+│   │   ├── Solution.tsx        # Platform solution features
+│   │   ├── HowItWorks.tsx      # 4-step process timeline
+│   │   ├── Features.tsx        # Feature cards
+│   │   ├── Mission.tsx         # Mission & vision section
+│   │   ├── Trust.tsx           # Target audience section
+│   │   ├── DemoForm.tsx        # Demo booking form
+│   │   └── Footer.tsx          # Site footer
+│   └── lib/
+│       ├── db.ts               # SQLite database helper (local dev only)
+│       └── i18n.tsx            # Internationalization (FR/EN)
+├── next.config.ts
+├── package.json
+└── tsconfig.json
+```
+
+## Features
+
+- Bilingual support (French default, English toggle)
+- Responsive design (mobile, tablet, desktop)
+- Smooth scroll navigation
+- Subtle CSS animations
+- Form validation with loading/success states
+- SQLite-backed demo request storage (local dev)
+- Admin dashboard with data table (local dev)
+- Modern SaaS UI inspired by Stripe/Linear/Vercel
+- AI-powered fraud detection with user behavior profiling
+- Automatic deployment via GitHub Actions
