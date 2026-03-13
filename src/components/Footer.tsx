@@ -34,9 +34,9 @@ export default function Footer() {
     {
       title: t("footer.legal"),
       links: [
-        { label: t("footer.privacy"), href: "#" },
+        { label: t("footer.privacy"), href: "/mutuguard/privacy" },
         { label: t("footer.terms"), href: "#" },
-        { label: t("footer.cookies"), href: "#" },
+        { label: t("footer.cookies"), href: "/mutuguard/cookies" },
         { label: t("footer.dpa"), href: "#" },
       ],
     },
