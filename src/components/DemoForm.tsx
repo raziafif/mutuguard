@@ -64,7 +64,7 @@ export default function DemoForm() {
 
   if (status === "success") {
     return (
-      <section id="demo" className="py-20 sm:py-28">
+      <section id="demo" className="py-16 sm:py-20">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="p-10 bg-white rounded-2xl border border-success/30 shadow-lg">
             <div className="w-16 h-16 mx-auto mb-6 bg-success/10 rounded-full flex items-center justify-center">
@@ -92,7 +92,7 @@ export default function DemoForm() {
   }
 
   return (
-    <section id="demo" className="py-20 sm:py-28">
+    <section id="demo" className="py-16 sm:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="grid lg:grid-cols-5 gap-12">

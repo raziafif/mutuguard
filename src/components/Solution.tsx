@@ -18,9 +18,9 @@ export default function Solution() {
   const { t } = useI18n();
 
   return (
-    <section id="solution" className="py-20 sm:py-28">
+    <section id="solution" className="py-16 sm:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto text-center mb-16">
+        <div className="max-w-2xl mx-auto text-center mb-10">
           <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
             {t("solution.label")}
           </p>
