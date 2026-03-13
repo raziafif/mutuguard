@@ -43,6 +43,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 const fr: Record<string, string> = {
   // Nav
   "nav.problem": "Problème",
+  "nav.fraudStats": "Chiffres clés",
   "nav.solution": "Solution",
   "nav.howItWorks": "Comment ça marche",
   "nav.features": "Fonctionnalités",
@@ -155,6 +156,32 @@ const fr: Record<string, string> = {
   "trust.item4.title": "Équipes conformité et fraude",
   "trust.item4.desc": "Les professionnels de l'investigation et de la conformité qui ont besoin de meilleurs outils pour identifier, documenter et agir sur les cas de fraude.",
 
+  // Fraud Stats
+  "fraudStats.label": "Chiffres officiels",
+  "fraudStats.title": "La fraude à l'assurance santé : un défi croissant",
+  "fraudStats.subtitle": "Les rapports officiels des institutions publiques françaises montrent que la fraude à l'assurance santé coûte des milliards chaque année et reste difficile à détecter en temps réel.",
+  "fraudStats.reportsTitle": "Sources officielles",
+  "fraudStats.viewReport": "Voir le rapport officiel",
+  "fraudStats.cnam.title": "Caisse Nationale de l'Assurance Maladie (CNAM)",
+  "fraudStats.cnam.desc": "L'Assurance Maladie a détecté plus de 600 millions d'euros de fraude ces dernières années. La majorité des cas concerne les professionnels de santé plutôt que les patients.",
+  "fraudStats.hcfps.title": "Haut Conseil du financement de la protection sociale",
+  "fraudStats.hcfps.desc": "Les estimations publiques suggèrent que la fraude à l'assurance santé en France pourrait atteindre environ 1,7 milliard d'euros par an en incluant la fraude non détectée.",
+  "fraudStats.cdc.title": "Cour des comptes",
+  "fraudStats.cdc.desc": "Les audits de la Cour des comptes mettent en évidence des faiblesses structurelles dans les systèmes de détection de fraude et soulignent la nécessité de meilleurs contrôles automatisés.",
+  "fraudStats.stat1.value": "600M€+",
+  "fraudStats.stat1.label": "Fraude détectée annuellement par la CNAM",
+  "fraudStats.stat2.value": "1,7Md€",
+  "fraudStats.stat2.label": "Estimation totale de la fraude en France",
+  "fraudStats.stat3.value": "60%+",
+  "fraudStats.stat3.label": "Liée aux professionnels de santé",
+  "fraudStats.positioning.title": "Pourquoi MutuGuard est nécessaire",
+  "fraudStats.positioning.desc": "Malgré les efforts croissants de détection, la plupart des fraudes sont identifiées des mois après le versement des remboursements. MutuGuard introduit la vérification en temps réel et l'analyse de profils comportementaux pour aider les assureurs à détecter les sinistres suspects plus tôt.",
+  "fraudStats.positioning.cta": "Découvrir la plateforme",
+  "fraudStats.downloads.title": "Rapports sectoriels",
+  "fraudStats.dl1.title": "Rapport fraude CNAM",
+  "fraudStats.dl2.title": "Rapport d'audit — Cour des comptes",
+  "fraudStats.dl3.title": "Analyse de la fraude à l'assurance santé",
+
   // Demo form
   "demo.label": "Commencer",
   "demo.title": "Réservez votre démo personnalisée",
@@ -216,6 +243,7 @@ const fr: Record<string, string> = {
 const en: Record<string, string> = {
   // Nav
   "nav.problem": "Problem",
+  "nav.fraudStats": "Key Figures",
   "nav.solution": "Solution",
   "nav.howItWorks": "How It Works",
   "nav.features": "Features",
@@ -327,6 +355,32 @@ const en: Record<string, string> = {
   "trust.item3.desc": "Provider networks and third-party administrators that need to verify claims and prevent billing abuse at scale.",
   "trust.item4.title": "Compliance & Fraud Teams",
   "trust.item4.desc": "Investigation and compliance professionals who need better tools to identify, document, and act on fraud cases.",
+
+  // Fraud Stats
+  "fraudStats.label": "Official Statistics",
+  "fraudStats.title": "Healthcare Fraud is a Growing Challenge",
+  "fraudStats.subtitle": "Official reports from French public institutions show that healthcare fraud costs billions each year and remains difficult to detect in real time.",
+  "fraudStats.reportsTitle": "Official Sources",
+  "fraudStats.viewReport": "View official report",
+  "fraudStats.cnam.title": "Caisse Nationale de l'Assurance Maladie (CNAM)",
+  "fraudStats.cnam.desc": "The French National Health Insurance detected more than €600 million in fraud in recent years. Most fraud cases involve healthcare providers rather than patients.",
+  "fraudStats.hcfps.title": "Haut Conseil du financement de la protection sociale",
+  "fraudStats.hcfps.desc": "Public estimates suggest that healthcare fraud in France may reach around €1.7 billion annually when including undetected fraud.",
+  "fraudStats.cdc.title": "Cour des comptes",
+  "fraudStats.cdc.desc": "Audits from the French Court of Auditors highlight structural weaknesses in fraud detection systems and emphasize the need for better automated controls.",
+  "fraudStats.stat1.value": "€600M+",
+  "fraudStats.stat1.label": "Fraud detected annually by CNAM",
+  "fraudStats.stat2.value": "€1.7B",
+  "fraudStats.stat2.label": "Estimated total fraud in France",
+  "fraudStats.stat3.value": "60%+",
+  "fraudStats.stat3.label": "Linked to healthcare providers",
+  "fraudStats.positioning.title": "Why MutuGuard exists",
+  "fraudStats.positioning.desc": "Despite growing detection efforts, most fraud is identified months after reimbursements are paid. MutuGuard introduces real-time verification and behavioral profile analysis to help insurers detect suspicious claims earlier.",
+  "fraudStats.positioning.cta": "Discover the platform",
+  "fraudStats.downloads.title": "Industry Reports",
+  "fraudStats.dl1.title": "CNAM Fraud Report",
+  "fraudStats.dl2.title": "Court of Auditors Audit Report",
+  "fraudStats.dl3.title": "Healthcare Fraud Analysis",
 
   // Demo form
   "demo.label": "Get Started",

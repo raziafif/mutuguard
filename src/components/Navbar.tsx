@@ -9,6 +9,7 @@ export default function Navbar() {
 
   const navLinks = [
     { label: t("nav.problem"), href: "#problem" },
+    { label: t("nav.fraudStats"), href: "#fraud-stats" },
     { label: t("nav.solution"), href: "#solution" },
     { label: t("nav.features"), href: "#features" },
     { label: t("nav.mission"), href: "#mission" },

@@ -26,6 +26,12 @@ export const metadata: Metadata = {
     "conformité",
     "fraud detection",
     "health insurance",
+    "health insurance fraud",
+    "mutuelle fraude santé",
+    "insurance fraud detection",
+    "fraude assurance maladie",
+    "CNAM fraude",
+    "détection fraude temps réel",
   ],
 };
 

@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Problem from "@/components/Problem";
+import FraudStats from "@/components/FraudStats";
 import Solution from "@/components/Solution";
 import Features from "@/components/Features";
 import Mission from "@/components/Mission";
@@ -15,6 +16,7 @@ export default function Home() {
       <main>
         <Hero />
         <Problem />
+        <FraudStats />
         <Solution />
         <Features />
         <Mission />
