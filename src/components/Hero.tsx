@@ -52,7 +52,7 @@ export default function Hero() {
               {t("hero.cta1")}
               <svg className="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </a>
-            <a href="#how-it-works" className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 text-base font-medium text-foreground bg-white border border-border rounded-xl hover:bg-surface transition-all">
+            <a href="#solution" className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 text-base font-medium text-foreground bg-white border border-border rounded-xl hover:bg-surface transition-all">
               {t("hero.cta2")}
             </a>
           </div>
