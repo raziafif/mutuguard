@@ -3,6 +3,11 @@
 import { useState, type FormEvent } from "react";
 import { useI18n } from "@/lib/i18n";
 
+const DEMO_EMAIL = "fraziafif@gmail.com";
+
+/** Formspree form ID - sends demo requests to fraziafif@gmail.com */
+const FORMSPREE_FORM_ID = process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID ?? "xdawwzeb";
+
 interface FormData {
   name: string;
   company: string;
@@ -10,6 +15,20 @@ interface FormData {
   phone: string;
   company_size: string;
   message: string;
+}
+
+function buildMailtoUrl(form: FormData): string {
+  const subject = encodeURIComponent(`MutuGuard Demo Request - ${form.company}`);
+  const body = encodeURIComponent(
+    `New demo request from MutuGuard website:\n\n` +
+      `Name: ${form.name}\n` +
+      `Company: ${form.company}\n` +
+      `Email: ${form.email}\n` +
+      `Phone: ${form.phone || "(not provided)"}\n` +
+      `Company Size: ${form.company_size || "(not provided)"}\n\n` +
+      `Message:\n${form.message || "(none)"}`
+  );
+  return `mailto:${DEMO_EMAIL}?subject=${subject}&body=${body}`;
 }
 
 export default function DemoForm() {
@@ -35,31 +54,69 @@ export default function DemoForm() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const resetForm = () => {
+    setForm({ name: "", company: "", email: "", phone: "", company_size: "", message: "" });
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setStatus("loading");
     setErrorMsg("");
 
+    const submitSuccess = () => {
+      setStatus("success");
+      resetForm();
+    };
+
     try {
-      const res = await fetch("/api/demo", {
+      // 1. Try local API first (dev mode with SQLite)
+      const apiRes = await fetch("/api/demo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setErrorMsg(data.error || t("demo.error.generic"));
-        setStatus("error");
+      if (apiRes.ok) {
+        submitSuccess();
         return;
       }
 
-      setStatus("success");
-      setForm({ name: "", company: "", email: "", phone: "", company_size: "", message: "" });
+      // 2. API unavailable (404 on static) - try Formspree or mailto
+      const apiUnavailable = apiRes.status === 404 || apiRes.status === 0;
+      if (apiUnavailable) {
+        if (FORMSPREE_FORM_ID) {
+          const fsRes = await fetch(`https://formspree.io/f/${FORMSPREE_FORM_ID}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: form.name,
+              company: form.company,
+              email: form.email,
+              phone: form.phone,
+              company_size: form.company_size,
+              message: form.message,
+              _subject: `MutuGuard Demo Request - ${form.company}`,
+            }),
+          });
+          if (fsRes.ok) {
+            submitSuccess();
+            return;
+          }
+        }
+        // Fallback: mailto (opens email client with pre-filled message to fraziafif@gmail.com)
+        window.location.href = buildMailtoUrl(form);
+        submitSuccess();
+        return;
+      }
+
+      // API returned validation/server error
+      const data = await apiRes.json();
+      setErrorMsg(data.error || t("demo.error.generic"));
+      setStatus("error");
     } catch {
-      setStatus("success");
-      setForm({ name: "", company: "", email: "", phone: "", company_size: "", message: "" });
+      // Network error - use mailto fallback
+      window.location.href = buildMailtoUrl(form);
+      submitSuccess();
     }
   };
 

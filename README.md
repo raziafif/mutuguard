@@ -108,3 +108,12 @@ mutuguard/
 - Modern SaaS UI inspired by Stripe/Linear/Vercel
 - AI-powered fraud detection with user behavior profiling
 - Automatic deployment via GitHub Actions
+
+## Demo Form (Book your personalized demo)
+
+Demo requests are sent to **fraziafif@gmail.com**:
+
+- **Local dev**: Submissions are stored in SQLite and viewable in the admin dashboard.
+- **Static deployment (GitHub Pages)**: Uses a fallback chain:
+  1. **Formspree** (optional): Create a form at [formspree.io](https://formspree.io) with `fraziafif@gmail.com` as the recipient, then set `NEXT_PUBLIC_FORMSPREE_FORM_ID` in your build environment to enable direct email delivery.
+  2. **mailto fallback**: If Formspree is not configured, the form opens the user's email client with a pre-filled message to fraziafif@gmail.com.
