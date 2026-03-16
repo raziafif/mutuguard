@@ -45,6 +45,17 @@ function escapeHtml(text: string): string {
     .replace(/"/g, "&quot;");
 }
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Max-Age": "86400",
+};
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { status: 200, headers: CORS_HEADERS });
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -53,7 +64,7 @@ export async function POST(request: NextRequest) {
     if (!name || !company || !email) {
       return NextResponse.json(
         { error: "Name, company, and email are required." },
-        { status: 400 }
+        { status: 400, headers: CORS_HEADERS }
       );
     }
 
@@ -61,7 +72,7 @@ export async function POST(request: NextRequest) {
     if (!emailRegex.test(email)) {
       return NextResponse.json(
         { error: "Please provide a valid email address." },
-        { status: 400 }
+        { status: 400, headers: CORS_HEADERS }
       );
     }
 
@@ -86,7 +97,7 @@ export async function POST(request: NextRequest) {
         console.error("Resend timeout or error:", err);
         return NextResponse.json(
           { error: "Email service is temporarily unavailable. Please try again later." },
-          { status: 503 }
+          { status: 503, headers: CORS_HEADERS }
         );
       }
       const { error } = result;
@@ -94,13 +105,13 @@ export async function POST(request: NextRequest) {
         console.error("Resend error:", error);
         return NextResponse.json(
           { error: error.message || "Failed to send email." },
-          { status: 500 }
+          { status: 500, headers: CORS_HEADERS }
         );
       }
     } else if (isVercel) {
       return NextResponse.json(
         { error: "Email service not configured. Add RESEND_API_KEY in Vercel environment variables." },
-        { status: 503 }
+        { status: 503, headers: CORS_HEADERS }
       );
     } else {
       // Local dev without Resend: save to SQLite
@@ -110,20 +121,20 @@ export async function POST(request: NextRequest) {
       } catch {
         return NextResponse.json(
           { error: "Email service not configured. Set RESEND_API_KEY for production." },
-          { status: 503 }
+          { status: 503, headers: CORS_HEADERS }
         );
       }
     }
 
     return NextResponse.json(
       { success: true, message: "Demo request received successfully." },
-      { status: 201 }
+      { status: 201, headers: CORS_HEADERS }
     );
   } catch (err) {
     console.error("Demo API error:", err);
     return NextResponse.json(
       { error: "Internal server error." },
-      { status: 500 }
+      { status: 500, headers: CORS_HEADERS }
     );
   }
 }
