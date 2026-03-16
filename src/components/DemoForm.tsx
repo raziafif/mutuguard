@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { useI18n } from "@/lib/i18n";
 
 const DEMO_EMAIL = "fraziafif@gmail.com";
 
 /** Formspree form ID - sends demo requests to fraziafif@gmail.com */
 const FORMSPREE_FORM_ID = process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID ?? "xdawwzeb";
+
+const FORMSPREE_ACTION = `https://formspree.io/f/${FORMSPREE_FORM_ID}`;
 
 interface FormData {
   name: string;
@@ -31,6 +33,12 @@ function buildMailtoUrl(form: FormData): string {
   return `mailto:${DEMO_EMAIL}?subject=${subject}&body=${body}`;
 }
 
+/** True when running on production (GitHub Pages) - use native form POST to Formspree */
+function isProduction() {
+  if (typeof window === "undefined") return false;
+  return window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1";
+}
+
 export default function DemoForm() {
   const { t } = useI18n();
   const [form, setForm] = useState<FormData>({
@@ -44,6 +52,17 @@ export default function DemoForm() {
   const [consent, setConsent] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
+  // Show success when redirected back from Formspree (?demo=success)
+  useEffect(() => {
+    if (mounted && typeof window !== "undefined" && new URLSearchParams(window.location.search).get("demo") === "success") {
+      setStatus("success");
+      window.history.replaceState({}, "", window.location.pathname + window.location.hash);
+    }
+  }, [mounted]);
 
   const companySizes = [t("demo.size1"), t("demo.size2"), t("demo.size3"), t("demo.size4")];
   const benefits = [t("demo.benefit1"), t("demo.benefit2"), t("demo.benefit3"), t("demo.benefit4")];
@@ -63,13 +82,20 @@ export default function DemoForm() {
     setStatus("loading");
     setErrorMsg("");
 
+    // Production: native form POST to Formspree (most reliable, no CORS/JS issues)
+    if (mounted && isProduction()) {
+      const formEl = e.currentTarget;
+      formEl.submit();
+      return;
+    }
+
+    // Local dev: use API
     const submitSuccess = () => {
       setStatus("success");
       resetForm();
     };
 
     try {
-      // 1. Try local API first (dev mode with SQLite)
       const apiRes = await fetch("/api/demo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -81,41 +107,10 @@ export default function DemoForm() {
         return;
       }
 
-      // 2. API unavailable (404 on static) - try Formspree or mailto
-      const apiUnavailable = apiRes.status === 404 || apiRes.status === 0;
-      if (apiUnavailable) {
-        if (FORMSPREE_FORM_ID) {
-          const formData = new FormData();
-          formData.append("name", form.name);
-          formData.append("company", form.company);
-          formData.append("email", form.email);
-          formData.append("phone", form.phone || "");
-          formData.append("company_size", form.company_size || "");
-          formData.append("message", form.message || "");
-          formData.append("_subject", `MutuGuard Demo Request - ${form.company}`);
-
-          const fsRes = await fetch(`https://formspree.io/f/${FORMSPREE_FORM_ID}`, {
-            method: "POST",
-            headers: { Accept: "application/json" },
-            body: formData,
-          });
-          if (fsRes.ok) {
-            submitSuccess();
-            return;
-          }
-        }
-        // Fallback: mailto (opens email client with pre-filled message to fraziafif@gmail.com)
-        window.location.href = buildMailtoUrl(form);
-        submitSuccess();
-        return;
-      }
-
-      // API returned validation/server error
       const data = await apiRes.json();
       setErrorMsg(data.error || t("demo.error.generic"));
       setStatus("error");
     } catch {
-      // Network error - use mailto fallback
       window.location.href = buildMailtoUrl(form);
       submitSuccess();
     }
@@ -178,7 +173,18 @@ export default function DemoForm() {
             </div>
 
             <div className="lg:col-span-3">
-              <form onSubmit={handleSubmit} className="p-8 bg-white rounded-2xl border border-border shadow-lg">
+              <form
+                onSubmit={handleSubmit}
+                action={mounted && isProduction() ? FORMSPREE_ACTION : undefined}
+                method={mounted && isProduction() ? "POST" : undefined}
+                className="p-8 bg-white rounded-2xl border border-border shadow-lg"
+              >
+                {mounted && isProduction() && (
+                  <>
+                    <input type="hidden" name="_next" value="https://raziafif.github.io/mutuguard?demo=success#demo" />
+                    <input type="hidden" name="_subject" value={`MutuGuard Demo Request - ${form.company}`} />
+                  </>
+                )}
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1.5">
