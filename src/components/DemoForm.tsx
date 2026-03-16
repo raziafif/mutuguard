@@ -78,16 +78,14 @@ export default function DemoForm() {
   };
 
   const handleSubmit = async (e: FormEvent) => {
+    // Production: let form submit naturally to Formspree (don't preventDefault)
+    if (mounted && isProduction()) {
+      return;
+    }
+
     e.preventDefault();
     setStatus("loading");
     setErrorMsg("");
-
-    // Production: native form POST to Formspree (most reliable, no CORS/JS issues)
-    if (mounted && isProduction()) {
-      const formEl = e.currentTarget;
-      formEl.submit();
-      return;
-    }
 
     // Local dev: use API
     const submitSuccess = () => {
@@ -175,16 +173,12 @@ export default function DemoForm() {
             <div className="lg:col-span-3">
               <form
                 onSubmit={handleSubmit}
-                action={mounted && isProduction() ? FORMSPREE_ACTION : undefined}
-                method={mounted && isProduction() ? "POST" : undefined}
+                action={FORMSPREE_ACTION}
+                method="POST"
                 className="p-8 bg-white rounded-2xl border border-border shadow-lg"
               >
-                {mounted && isProduction() && (
-                  <>
-                    <input type="hidden" name="_next" value="https://raziafif.github.io/mutuguard?demo=success#demo" />
-                    <input type="hidden" name="_subject" value={`MutuGuard Demo Request - ${form.company}`} />
-                  </>
-                )}
+                <input type="hidden" name="_next" value="https://raziafif.github.io/mutuguard?demo=success#demo" />
+                <input type="hidden" name="_subject" value={`MutuGuard Demo Request - ${form.company}`} />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1.5">
