@@ -38,8 +38,8 @@ jobs:
         env:
           STATIC_EXPORT: "true"
           NEXT_PUBLIC_BASE_PATH: "/mutuguard"
-          # Demo form POSTs to Vercel API. Set vars.VERCEL_URL if your deployment uses a different URL.
-          NEXT_PUBLIC_API_BASE_URL: ${{ vars.VERCEL_URL || 'https://mutuguard-raziafifs-projects.vercel.app' }}
+          # Formspree for demo form (free, no Vercel Deployment Protection). Set vars.FORMSPREE_ID if different.
+          NEXT_PUBLIC_FORMSPREE_ID: ${{ vars.FORMSPREE_ID || 'xdawwzeb' }}
         run: npx next build
 
       - name: Upload artifact

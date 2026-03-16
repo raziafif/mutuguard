@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useI18n } from "@/lib/i18n";
-import { BASE_PATH, API_BASE_URL } from "@/lib/constants";
+import { BASE_PATH, FORMSPREE_ID } from "@/lib/constants";
 
 interface FormData {
   name: string;
@@ -42,11 +42,17 @@ export default function DemoForm() {
     setErrorMsg("");
 
     try {
-      const apiUrl = API_BASE_URL ? `${API_BASE_URL}/api/demo` : `${BASE_PATH}/api/demo`;
-      const apiRes = await fetch(apiUrl, {
+      const useFormspree = !!FORMSPREE_ID;
+      const url = useFormspree
+        ? `https://formspree.io/f/${FORMSPREE_ID}`
+        : `${BASE_PATH}/api/demo`;
+      const body = useFormspree
+        ? { ...form, _subject: `MutuGuard Demo Request - ${form.company}` }
+        : form;
+      const apiRes = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(body),
       });
 
       let data: { error?: string } = {};
