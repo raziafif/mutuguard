@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n";
+import { BASE_PATH } from "@/lib/constants";
 
 export default function Footer() {
   const { t } = useI18n();
@@ -34,9 +35,9 @@ export default function Footer() {
     {
       title: t("footer.legal"),
       links: [
-        { label: t("footer.privacy"), href: "/mutuguard/privacy" },
+        { label: t("footer.privacy"), href: `${BASE_PATH}/privacy` },
         { label: t("footer.terms"), href: "#" },
-        { label: t("footer.cookies"), href: "/mutuguard/cookies" },
+        { label: t("footer.cookies"), href: `${BASE_PATH}/cookies` },
         { label: t("footer.dpa"), href: "#" },
       ],
     },

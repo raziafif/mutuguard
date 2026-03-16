@@ -1,12 +1,8 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useI18n } from "@/lib/i18n";
-
-const DEMO_EMAIL = "fraziafif@gmail.com";
-
-/** FormSubmit.co - free, sends directly to inbox. First submission triggers activation email. */
-const FORMSUBMIT_ACTION = `https://formsubmit.co/${DEMO_EMAIL}`;
+import { BASE_PATH } from "@/lib/constants";
 
 interface FormData {
   name: string;
@@ -15,26 +11,6 @@ interface FormData {
   phone: string;
   company_size: string;
   message: string;
-}
-
-function buildMailtoUrl(form: FormData): string {
-  const subject = encodeURIComponent(`MutuGuard Demo Request - ${form.company}`);
-  const body = encodeURIComponent(
-    `New demo request from MutuGuard website:\n\n` +
-      `Name: ${form.name}\n` +
-      `Company: ${form.company}\n` +
-      `Email: ${form.email}\n` +
-      `Phone: ${form.phone || "(not provided)"}\n` +
-      `Company Size: ${form.company_size || "(not provided)"}\n\n` +
-      `Message:\n${form.message || "(none)"}`
-  );
-  return `mailto:${DEMO_EMAIL}?subject=${subject}&body=${body}`;
-}
-
-/** True when running on production (GitHub Pages) */
-function isProduction() {
-  if (typeof window === "undefined") return false;
-  return window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1";
 }
 
 export default function DemoForm() {
@@ -49,20 +25,10 @@ export default function DemoForm() {
   });
   const [consent, setConsent] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [usedMailto, setUsedMailto] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   const companySizes = [t("demo.size1"), t("demo.size2"), t("demo.size3"), t("demo.size4")];
   const benefits = [t("demo.benefit1"), t("demo.benefit2"), t("demo.benefit3"), t("demo.benefit4")];
-
-  // Show success when redirected back from FormSubmit (?demo=success)
-  useEffect(() => {
-    if (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("demo") === "success") {
-      setStatus("success");
-      setUsedMailto(false);
-      window.history.replaceState({}, "", window.location.pathname + window.location.hash);
-    }
-  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -70,26 +36,11 @@ export default function DemoForm() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const resetForm = () => {
-    setForm({ name: "", company: "", email: "", phone: "", company_size: "", message: "" });
-  };
-
   const handleSubmit = async (e: FormEvent) => {
-    // Production: native form POST to FormSubmit.co (emails go directly to inbox)
-    if (typeof window !== "undefined" && isProduction()) {
-      return;
-    }
-
     e.preventDefault();
     setStatus("loading");
     setErrorMsg("");
 
-    const submitSuccess = () => {
-      setStatus("success");
-      resetForm();
-    };
-
-    // Local dev: use API (SQLite)
     try {
       const apiRes = await fetch("/api/demo", {
         method: "POST",
@@ -97,19 +48,19 @@ export default function DemoForm() {
         body: JSON.stringify(form),
       });
 
+      const data = await apiRes.json();
+
       if (apiRes.ok) {
-        setUsedMailto(false);
-        submitSuccess();
+        setStatus("success");
+        setForm({ name: "", company: "", email: "", phone: "", company_size: "", message: "" });
         return;
       }
 
-      const data = await apiRes.json();
       setErrorMsg(data.error || t("demo.error.generic"));
       setStatus("error");
     } catch {
-      setUsedMailto(true);
-      window.location.href = buildMailtoUrl(form);
-      submitSuccess();
+      setErrorMsg(t("demo.error.network"));
+      setStatus("error");
     }
   };
 
@@ -130,11 +81,6 @@ export default function DemoForm() {
             <p className="text-muted leading-relaxed">
               {t("demo.success.desc")}
             </p>
-            {usedMailto && (
-              <p className="mt-3 text-sm text-muted font-medium">
-                {t("demo.success.mailtoHint")}
-              </p>
-            )}
             <button
               onClick={() => setStatus("idle")}
               className="mt-6 text-sm text-primary hover:underline"
@@ -175,15 +121,7 @@ export default function DemoForm() {
             </div>
 
             <div className="lg:col-span-3">
-              <form
-                onSubmit={handleSubmit}
-                action={FORMSUBMIT_ACTION}
-                method="POST"
-                className="p-8 bg-white rounded-2xl border border-border shadow-lg"
-              >
-                <input type="hidden" name="_next" value="https://raziafif.github.io/mutuguard?demo=success#demo" />
-                <input type="hidden" name="_subject" value={`MutuGuard Demo Request - ${form.company}`} />
-                <input type="hidden" name="_captcha" value="false" />
+              <form onSubmit={handleSubmit} className="p-8 bg-white rounded-2xl border border-border shadow-lg">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1.5">
@@ -238,7 +176,7 @@ export default function DemoForm() {
                     />
                     <span className="text-xs text-muted leading-relaxed">
                       {t("demo.consent")}{" "}
-                      <a href="/mutuguard/privacy" className="text-primary underline hover:text-primary-dark">{t("demo.consentLink")}</a>
+                      <a href={`${BASE_PATH}/privacy`} className="text-primary underline hover:text-primary-dark">{t("demo.consentLink")}</a>
                     </span>
                   </label>
                 </div>

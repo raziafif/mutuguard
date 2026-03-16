@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useI18n } from "@/lib/i18n";
+import { BASE_PATH } from "@/lib/constants";
 
 const CONSENT_KEY = "mutuguard_cookie_consent";
 
@@ -33,7 +34,7 @@ export default function CookieBanner() {
           <p className="text-sm font-semibold mb-1">{t("cookie.title")}</p>
           <p className="text-xs text-white/60 leading-relaxed">
             {t("cookie.desc")}{" "}
-            <a href="/mutuguard/cookies" className="text-primary underline hover:text-primary/80">
+            <a href={`${BASE_PATH}/cookies`} className="text-primary underline hover:text-primary/80">
               {t("cookie.learnMore")}
             </a>
           </p>

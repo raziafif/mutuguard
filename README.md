@@ -2,16 +2,14 @@
 
 A modern, bilingual (FR/EN) SaaS landing page for **MutuGuard**, an AI-powered fraud detection platform for health insurance companies and mutuelles.
 
-**Live site:** [https://raziafif.github.io/mutuguard](https://raziafif.github.io/mutuguard)
-
 ## Tech Stack
 
 - **Next.js 16** (App Router)
 - **React 19**
 - **TailwindCSS 4**
 - **TypeScript**
-- **SQLite** (via better-sqlite3) for demo request storage (local dev)
-- **GitHub Pages** for static deployment
+- **Resend** for demo form email delivery (Vercel)
+- **SQLite** (via better-sqlite3) for demo request storage (local dev only)
 
 ## Getting Started
 
@@ -52,13 +50,19 @@ Output goes to the `out/` directory. The API routes and admin page are excluded 
 
 ## Deployment
 
-This project uses **GitHub Actions** to automatically deploy to **GitHub Pages** on every push to `main`.
+### Vercel (recommended)
 
-The workflow (`.github/workflows/deploy.yml`):
-1. Installs dependencies
-2. Removes server-only code (API routes, admin page, SQLite)
-3. Builds with `STATIC_EXPORT=true`
-4. Deploys the `out/` directory to GitHub Pages
+1. Push your code to GitHub and import the repo in [Vercel](https://vercel.com).
+2. Add environment variable: `RESEND_API_KEY` = your API key from [resend.com/api-keys](https://resend.com/api-keys).
+3. Deploy. Demo requests will be sent to fraziafif@gmail.com via Resend.
+
+### GitHub Pages (static)
+
+```bash
+STATIC_EXPORT=true npx next build
+```
+
+The workflow removes API routes for static export. Use Vercel for the demo form to work.
 
 ## Project Structure
 
@@ -113,5 +117,5 @@ mutuguard/
 
 Demo requests are sent to **fraziafif@gmail.com**:
 
-- **Local dev**: Submissions are stored in SQLite and viewable in the admin dashboard.
-- **Static deployment (GitHub Pages)**: Uses **FormSubmit.co** — free, no signup. First submission sends an activation email to fraziafif@gmail.com; click the link once, then all future submissions go directly to your inbox. Check spam if you don't see the activation email.
+- **Vercel**: Uses **Resend** — emails go directly to your inbox. Set `RESEND_API_KEY` in Vercel environment variables.
+- **Local dev**: Without `RESEND_API_KEY`, submissions are stored in SQLite and viewable in the admin dashboard.
