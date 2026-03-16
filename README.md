@@ -119,3 +119,8 @@ Demo requests are sent to **fraziafif@gmail.com**:
 
 - **Vercel**: Uses **Resend** — emails go directly to your inbox. Set `RESEND_API_KEY` in Vercel environment variables.
 - **Local dev**: Without `RESEND_API_KEY`, submissions are stored in SQLite and viewable in the admin dashboard.
+
+### Resend troubleshooting
+
+- **Resend account**: Sign up at [resend.com](https://resend.com) with **fraziafif@gmail.com**. With `onboarding@resend.dev`, you can only send to the email you registered with.
+- **Domain verification**: To send from your own domain, verify it at [resend.com/domains](https://resend.com/domains).

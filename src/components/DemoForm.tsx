@@ -55,9 +55,13 @@ export default function DemoForm() {
       } catch {
         if (apiRes.status === 404) {
           setErrorMsg(t("demo.error.noApi"));
-          setStatus("error");
-          return;
+        } else if (apiRes.status === 503) {
+          setErrorMsg("RESEND_API_KEY not configured. Add it in Vercel environment variables.");
+        } else {
+          setErrorMsg(t("demo.error.generic") + ` (${apiRes.status})`);
         }
+        setStatus("error");
+        return;
       }
 
       if (apiRes.ok) {
