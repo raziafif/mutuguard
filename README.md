@@ -114,4 +114,4 @@ mutuguard/
 Demo requests are sent to **fraziafif@gmail.com**:
 
 - **Local dev**: Submissions are stored in SQLite and viewable in the admin dashboard.
-- **Static deployment (GitHub Pages)**: Uses **mailto** — opens the user's email client with a pre-filled message. No signup, no verification, 100% free.
+- **Static deployment (GitHub Pages)**: Uses **FormSubmit.co** — free, no signup. First submission sends an activation email to fraziafif@gmail.com; click the link once, then all future submissions go directly to your inbox. Check spam if you don't see the activation email.

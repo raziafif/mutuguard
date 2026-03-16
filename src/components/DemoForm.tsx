@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { useI18n } from "@/lib/i18n";
 
 const DEMO_EMAIL = "fraziafif@gmail.com";
+
+/** FormSubmit.co - free, sends directly to inbox. First submission triggers activation email. */
+const FORMSUBMIT_ACTION = `https://formsubmit.co/${DEMO_EMAIL}`;
 
 interface FormData {
   name: string;
@@ -28,7 +31,7 @@ function buildMailtoUrl(form: FormData): string {
   return `mailto:${DEMO_EMAIL}?subject=${subject}&body=${body}`;
 }
 
-/** True when running on production (GitHub Pages) - use mailto */
+/** True when running on production (GitHub Pages) */
 function isProduction() {
   if (typeof window === "undefined") return false;
   return window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1";
@@ -52,6 +55,15 @@ export default function DemoForm() {
   const companySizes = [t("demo.size1"), t("demo.size2"), t("demo.size3"), t("demo.size4")];
   const benefits = [t("demo.benefit1"), t("demo.benefit2"), t("demo.benefit3"), t("demo.benefit4")];
 
+  // Show success when redirected back from FormSubmit (?demo=success)
+  useEffect(() => {
+    if (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("demo") === "success") {
+      setStatus("success");
+      setUsedMailto(false);
+      window.history.replaceState({}, "", window.location.pathname + window.location.hash);
+    }
+  }, []);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -63,6 +75,11 @@ export default function DemoForm() {
   };
 
   const handleSubmit = async (e: FormEvent) => {
+    // Production: native form POST to FormSubmit.co (emails go directly to inbox)
+    if (typeof window !== "undefined" && isProduction()) {
+      return;
+    }
+
     e.preventDefault();
     setStatus("loading");
     setErrorMsg("");
@@ -71,14 +88,6 @@ export default function DemoForm() {
       setStatus("success");
       resetForm();
     };
-
-    // Production: mailto (free, no signup, no verification - opens email client)
-    if (typeof window !== "undefined" && isProduction()) {
-      setUsedMailto(true);
-      window.location.href = buildMailtoUrl(form);
-      submitSuccess();
-      return;
-    }
 
     // Local dev: use API (SQLite)
     try {
@@ -166,7 +175,15 @@ export default function DemoForm() {
             </div>
 
             <div className="lg:col-span-3">
-              <form onSubmit={handleSubmit} className="p-8 bg-white rounded-2xl border border-border shadow-lg">
+              <form
+                onSubmit={handleSubmit}
+                action={FORMSUBMIT_ACTION}
+                method="POST"
+                className="p-8 bg-white rounded-2xl border border-border shadow-lg"
+              >
+                <input type="hidden" name="_next" value="https://raziafif.github.io/mutuguard?demo=success#demo" />
+                <input type="hidden" name="_subject" value={`MutuGuard Demo Request - ${form.company}`} />
+                <input type="hidden" name="_captcha" value="false" />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1.5">
