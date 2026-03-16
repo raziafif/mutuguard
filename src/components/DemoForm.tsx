@@ -42,13 +42,23 @@ export default function DemoForm() {
     setErrorMsg("");
 
     try {
-      const apiRes = await fetch("/api/demo", {
+      const apiUrl = `${BASE_PATH}/api/demo`;
+      const apiRes = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
 
-      const data = await apiRes.json();
+      let data: { error?: string } = {};
+      try {
+        data = await apiRes.json();
+      } catch {
+        if (apiRes.status === 404) {
+          setErrorMsg(t("demo.error.noApi"));
+          setStatus("error");
+          return;
+        }
+      }
 
       if (apiRes.ok) {
         setStatus("success");

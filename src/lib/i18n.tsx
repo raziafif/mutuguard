@@ -216,6 +216,7 @@ const fr: Record<string, string> = {
   "demo.success.mailtoHint": "Votre client email s'est ouvert. Cliquez sur Envoyer pour finaliser votre demande.",
   "demo.success.another": "Soumettre une autre demande",
   "demo.error.network": "Erreur réseau. Veuillez réessayer.",
+  "demo.error.noApi": "Le formulaire n'est pas disponible. Déployez sur Vercel avec RESEND_API_KEY.",
   "demo.error.generic": "Une erreur est survenue.",
 
   // Cookie banner
@@ -460,6 +461,7 @@ const en: Record<string, string> = {
   "demo.success.mailtoHint": "Your email client has opened. Please click Send to complete your request.",
   "demo.success.another": "Submit another request",
   "demo.error.network": "Network error. Please try again.",
+  "demo.error.noApi": "Form unavailable. Deploy to Vercel with RESEND_API_KEY configured.",
   "demo.error.generic": "Something went wrong.",
 
   // Cookie banner
