@@ -2,8 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 15;
 
 const DEMO_EMAIL = "fraziafif@gmail.com";
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error("Request timeout")), ms)
+    ),
+  ]);
+}
 
 function buildEmailHtml(data: {
   name: string;
@@ -56,16 +66,30 @@ export async function POST(request: NextRequest) {
     }
 
     const apiKey = process.env.RESEND_API_KEY;
+    const isVercel = !!process.env.VERCEL;
+
     if (apiKey) {
       const resend = new Resend(apiKey);
-      const { data, error } = await resend.emails.send({
-        from: "MutuGuard <onboarding@resend.dev>",
-        to: [DEMO_EMAIL],
-        replyTo: email,
-        subject: `MutuGuard Demo Request - ${company}`,
-        html: buildEmailHtml({ name, company, email, phone, company_size, message }),
-      });
-
+      let result: { data: unknown; error: { message?: string } | null };
+      try {
+        result = await withTimeout(
+          resend.emails.send({
+            from: "MutuGuard <onboarding@resend.dev>",
+            to: [DEMO_EMAIL],
+            replyTo: email,
+            subject: `MutuGuard Demo Request - ${company}`,
+            html: buildEmailHtml({ name, company, email, phone, company_size, message }),
+          }),
+          8000
+        );
+      } catch (err) {
+        console.error("Resend timeout or error:", err);
+        return NextResponse.json(
+          { error: "Email service is temporarily unavailable. Please try again later." },
+          { status: 503 }
+        );
+      }
+      const { error } = result;
       if (error) {
         console.error("Resend error:", error);
         return NextResponse.json(
@@ -73,6 +97,11 @@ export async function POST(request: NextRequest) {
           { status: 500 }
         );
       }
+    } else if (isVercel) {
+      return NextResponse.json(
+        { error: "Email service not configured. Add RESEND_API_KEY in Vercel environment variables." },
+        { status: 503 }
+      );
     } else {
       // Local dev without Resend: save to SQLite
       try {
