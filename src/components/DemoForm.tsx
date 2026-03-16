@@ -85,18 +85,19 @@ export default function DemoForm() {
       const apiUnavailable = apiRes.status === 404 || apiRes.status === 0;
       if (apiUnavailable) {
         if (FORMSPREE_FORM_ID) {
+          const formData = new FormData();
+          formData.append("name", form.name);
+          formData.append("company", form.company);
+          formData.append("email", form.email);
+          formData.append("phone", form.phone || "");
+          formData.append("company_size", form.company_size || "");
+          formData.append("message", form.message || "");
+          formData.append("_subject", `MutuGuard Demo Request - ${form.company}`);
+
           const fsRes = await fetch(`https://formspree.io/f/${FORMSPREE_FORM_ID}`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              name: form.name,
-              company: form.company,
-              email: form.email,
-              phone: form.phone,
-              company_size: form.company_size,
-              message: form.message,
-              _subject: `MutuGuard Demo Request - ${form.company}`,
-            }),
+            headers: { Accept: "application/json" },
+            body: formData,
           });
           if (fsRes.ok) {
             submitSuccess();
