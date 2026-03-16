@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
+export const dynamic = "force-dynamic";
+
 const DEMO_EMAIL = "fraziafif@gmail.com";
 
 function buildEmailHtml(data: {
@@ -97,12 +99,3 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
-  try {
-    const { getAllDemoRequests } = await import("@/lib/db");
-    const requests = getAllDemoRequests();
-    return NextResponse.json({ requests });
-  } catch {
-    return NextResponse.json({ requests: [] });
-  }
-}

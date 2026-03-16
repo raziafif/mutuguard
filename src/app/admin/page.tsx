@@ -18,7 +18,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/demo")
+    fetch("/api/demo/requests")
       .then((res) => res.json())
       .then((data) => {
         setRequests(data.requests || []);
@@ -68,7 +68,7 @@ export default function AdminPage() {
           <button
             onClick={() => {
               setLoading(true);
-              fetch("/api/demo")
+              fetch("/api/demo/requests")
                 .then((res) => res.json())
                 .then((data) => {
                   setRequests(data.requests || []);
