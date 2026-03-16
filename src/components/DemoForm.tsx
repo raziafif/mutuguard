@@ -1,14 +1,9 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useI18n } from "@/lib/i18n";
 
 const DEMO_EMAIL = "fraziafif@gmail.com";
-
-/** Formspree form ID - sends demo requests to fraziafif@gmail.com */
-const FORMSPREE_FORM_ID = process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID ?? "xdawwzeb";
-
-const FORMSPREE_ACTION = `https://formspree.io/f/${FORMSPREE_FORM_ID}`;
 
 interface FormData {
   name: string;
@@ -33,7 +28,7 @@ function buildMailtoUrl(form: FormData): string {
   return `mailto:${DEMO_EMAIL}?subject=${subject}&body=${body}`;
 }
 
-/** True when running on production (GitHub Pages) - use native form POST to Formspree */
+/** True when running on production (GitHub Pages) - use mailto */
 function isProduction() {
   if (typeof window === "undefined") return false;
   return window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1";
@@ -51,18 +46,8 @@ export default function DemoForm() {
   });
   const [consent, setConsent] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [usedMailto, setUsedMailto] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
-
-  // Show success when redirected back from Formspree (?demo=success)
-  useEffect(() => {
-    if (mounted && typeof window !== "undefined" && new URLSearchParams(window.location.search).get("demo") === "success") {
-      setStatus("success");
-      window.history.replaceState({}, "", window.location.pathname + window.location.hash);
-    }
-  }, [mounted]);
 
   const companySizes = [t("demo.size1"), t("demo.size2"), t("demo.size3"), t("demo.size4")];
   const benefits = [t("demo.benefit1"), t("demo.benefit2"), t("demo.benefit3"), t("demo.benefit4")];
@@ -78,21 +63,24 @@ export default function DemoForm() {
   };
 
   const handleSubmit = async (e: FormEvent) => {
-    // Production: let form submit naturally to Formspree (don't preventDefault)
-    if (mounted && isProduction()) {
-      return;
-    }
-
     e.preventDefault();
     setStatus("loading");
     setErrorMsg("");
 
-    // Local dev: use API
     const submitSuccess = () => {
       setStatus("success");
       resetForm();
     };
 
+    // Production: mailto (free, no signup, no verification - opens email client)
+    if (typeof window !== "undefined" && isProduction()) {
+      setUsedMailto(true);
+      window.location.href = buildMailtoUrl(form);
+      submitSuccess();
+      return;
+    }
+
+    // Local dev: use API (SQLite)
     try {
       const apiRes = await fetch("/api/demo", {
         method: "POST",
@@ -101,6 +89,7 @@ export default function DemoForm() {
       });
 
       if (apiRes.ok) {
+        setUsedMailto(false);
         submitSuccess();
         return;
       }
@@ -109,6 +98,7 @@ export default function DemoForm() {
       setErrorMsg(data.error || t("demo.error.generic"));
       setStatus("error");
     } catch {
+      setUsedMailto(true);
       window.location.href = buildMailtoUrl(form);
       submitSuccess();
     }
@@ -131,6 +121,11 @@ export default function DemoForm() {
             <p className="text-muted leading-relaxed">
               {t("demo.success.desc")}
             </p>
+            {usedMailto && (
+              <p className="mt-3 text-sm text-muted font-medium">
+                {t("demo.success.mailtoHint")}
+              </p>
+            )}
             <button
               onClick={() => setStatus("idle")}
               className="mt-6 text-sm text-primary hover:underline"
@@ -171,14 +166,7 @@ export default function DemoForm() {
             </div>
 
             <div className="lg:col-span-3">
-              <form
-                onSubmit={handleSubmit}
-                action={FORMSPREE_ACTION}
-                method="POST"
-                className="p-8 bg-white rounded-2xl border border-border shadow-lg"
-              >
-                <input type="hidden" name="_next" value="https://raziafif.github.io/mutuguard?demo=success#demo" />
-                <input type="hidden" name="_subject" value={`MutuGuard Demo Request - ${form.company}`} />
+              <form onSubmit={handleSubmit} className="p-8 bg-white rounded-2xl border border-border shadow-lg">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1.5">
