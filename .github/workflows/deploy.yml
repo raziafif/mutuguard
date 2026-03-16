@@ -37,6 +37,9 @@ jobs:
       - name: Build
         env:
           STATIC_EXPORT: "true"
+          NEXT_PUBLIC_BASE_PATH: "/mutuguard"
+          # Set VERCEL_URL in repo Variables (e.g. https://mutuguard.vercel.app) so demo form POSTs to Vercel API
+          NEXT_PUBLIC_API_BASE_URL: ${{ vars.VERCEL_URL }}
         run: npx next build
 
       - name: Upload artifact

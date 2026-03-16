@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useI18n } from "@/lib/i18n";
-import { BASE_PATH } from "@/lib/constants";
+import { BASE_PATH, API_BASE_URL } from "@/lib/constants";
 
 interface FormData {
   name: string;
@@ -42,7 +42,7 @@ export default function DemoForm() {
     setErrorMsg("");
 
     try {
-      const apiUrl = `${BASE_PATH}/api/demo`;
+      const apiUrl = API_BASE_URL ? `${API_BASE_URL}/api/demo` : `${BASE_PATH}/api/demo`;
       const apiRes = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

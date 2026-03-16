@@ -62,7 +62,11 @@ Output goes to the `out/` directory. The API routes and admin page are excluded 
 STATIC_EXPORT=true npx next build
 ```
 
-The workflow removes API routes for static export. Use Vercel for the demo form to work.
+The workflow removes API routes for static export. For the demo form to work:
+
+1. Deploy the app to Vercel (for the API).
+2. In GitHub: **Settings → Secrets and variables → Actions**, add variable `VERCEL_URL` = your Vercel URL (e.g. `https://mutuguard.vercel.app`).
+3. Redeploy. The form will POST to the Vercel API.
 
 ## Project Structure
 
