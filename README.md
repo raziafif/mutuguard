@@ -62,7 +62,7 @@ Output goes to the `out/` directory. The API routes and admin page are excluded 
 STATIC_EXPORT=true npx next build
 ```
 
-The workflow removes API routes for static export. The demo form uses **Formspree** (free) to send submissions to your email. Set `vars.FORMSPREE_ID` in GitHub repo Variables if you use a different [Formspree](https://formspree.io) form ID.
+The workflow deploys to the `gh-pages` branch. **Enable Pages**: Settings → Pages → Source: **Deploy from a branch** → Branch: `gh-pages` → Save. The demo form uses **Formspree** (free). Set `vars.FORMSPREE_ID` in repo Variables if different.
 
 ## Project Structure
 
