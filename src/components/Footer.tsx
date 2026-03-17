@@ -10,7 +10,6 @@ export default function Footer() {
     {
       title: t("footer.product"),
       links: [
-        { label: t("footer.pricing"), href: "#" },
         { label: t("footer.documentation"), href: "#" },
       ],
     },
