@@ -4,7 +4,7 @@ const isStaticExport = process.env.STATIC_EXPORT === "true";
 
 const nextConfig: NextConfig = {
   ...(isStaticExport
-    ? { output: "export", basePath: "/mutuguard" }
+    ? { output: "export", basePath: "/mutuguard", trailingSlash: true }
     : { serverExternalPackages: ["better-sqlite3"] }),
   images: { unoptimized: true },
   async headers() {
