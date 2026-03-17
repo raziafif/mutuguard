@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n";
+import { REPORT_URLS } from "@/lib/constants";
 
 const problemIcons = [
   <svg key="0" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="9" y1="15" x2="15" y2="15" /></svg>,
@@ -103,7 +104,7 @@ export default function Problem() {
                 <p className="text-xs text-muted leading-relaxed mb-3 flex-1">
                   {t(`fraudStats.${key}.desc`)}
                 </p>
-                <a href="#" className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary-dark transition-colors">
+                <a href={REPORT_URLS[key]} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary-dark transition-colors">
                   {t("fraudStats.viewReport")}
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
                 </a>
